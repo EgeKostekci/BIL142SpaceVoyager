@@ -48,9 +48,13 @@ void asteroidZone::takeDamageOrNot( std::unique_ptr<IShip>& myShip) {
 }
 
 void spacePirates::RunBattleBargain( std::unique_ptr<IShip>& myShip) {
-    if(myShip->getFuel()<=33)
-    std::cout<<"For bargaining press B, for fighting press F\n";
-    else{
+    if(myShip->getFuel()<=33) {
+        std::cout << "For bargaining press B, for fighting press F\n";
+    }
+    else if(myShip->displayMoney()==0){
+        std::cout<<"For running press R, for fighting press F\n";
+    }
+    else {
         std::cout<<"For running press R,for fighting press F,for bargaining press B\n";
     }
     char choice;
@@ -77,23 +81,29 @@ void spacePirates::RunBattleBargain( std::unique_ptr<IShip>& myShip) {
             }
             else{
                 std::cout<<"Not enough fuel\n";
+                spacePirates obj;
+                obj.RunBattleBargain(myShip);
             }
             break;
 
         case 'B':
-            if(moneyLuck==0){
-                moneyAmount=10;
-            }
-            else if(moneyLuck==1){
-                moneyAmount=20;
+            if(myShip->displayMoney()>0) {
+                if (moneyLuck == 0) {
+                    moneyAmount = 10;
+                } else if (moneyLuck == 1) {
+                    moneyAmount = 20;
+                } else {
+                    moneyAmount = 30;
+                }
+                myShip->giveMoney(moneyAmount);
+                myShip->displayMoney();
+                break;
             }
             else{
-                moneyAmount=30;
+                std::cout<<"Not enough money\n";
+                spacePirates obj;
+                obj.RunBattleBargain(myShip);
             }
-            myShip->giveMoney(moneyAmount);
-            myShip->displayMoney();
-            break;
-
         case 'F':
             if(damageLuck==0){
                 myShip->loseHealth(healthAmount);
